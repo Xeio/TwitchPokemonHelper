@@ -1,5 +1,8 @@
 var _playSound = true;
 var _volume = 1;
+var _debugMode = !chrome.runtime.getManifest().update_url;
+
+load();
 
 function load(){
     chrome.storage.local.get(["playSound", "volume"], function(value){
@@ -13,16 +16,16 @@ function load(){
             _volume = value.volume;
         }
         else{
-            setVolume(1);
+            _volume = 1;
         }
     });
     chrome.extension.onMessage.addListener(onMessage);
+    chrome.runtime.onMessageExternal.addListener(onMessage);
 }
 
 function onMessage(request, sender, sendResponse){
     if (request.action == "badge"){
-        if(!_playSound) return;
-        play();
+        handleBadgeMessage(request);
     }
     else if (request.action == "getActivate"){
         sendResponse(_playSound);
@@ -61,11 +64,32 @@ function setVolume(value){
     play();
 }
 
-function play(){
+function play(newPokemon){
     var audio = new Audio();
     audio.volume = _volume;
-    audio.src = "media/badge_notification.mp3"
+    if(!newPokemon){
+        audio.src = "media/badge_notification.mp3"
+    }
+    else{
+        audio.src = "media/new_pokemon_notification.mp3"
+    }
     audio.play();
 }
 
-load();
+function handleBadgeMessage(request){
+    if(_debugMode){
+        console.log(request.message, request.pokemonData, request.collectionData);
+    }
+
+    let pokemonId = request.message.spawnedItem.itemId;
+    let collectionInfo = request.collectionData.find(i => i.itemId == pokemonId);
+    let newPokemon = !collectionInfo || !collectionInfo.collected;
+
+    if(_debugMode && newPokemon){
+        let pokemonInfo = request.pokemonData.find(i => i.id == pokemonId);
+        console.log(`New pokemon detected ${pokemonInfo && pokemonId.nameEn}`)
+    }
+
+    if(!_playSound) return;
+    play(newPokemon);
+}

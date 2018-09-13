@@ -1,6 +1,6 @@
 {
   "name": "Twitch Pokemon Helper",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "manifest_version": 2,
   "description": "Helps attain pokemon badges the TwitchPresents stream.",
   "permissions": [
@@ -24,5 +24,13 @@
   },
   "browser_action": {
     "default_popup": "src/options.html"
+  },
+  "web_accessible_resources": [
+    "src/pageInject.js"
+  ],
+  "externally_connectable": {
+    "matches": [
+      "*://*.ext-twitch.tv/*"
+    ]
   }
 }

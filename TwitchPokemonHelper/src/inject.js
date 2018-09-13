@@ -1,22 +1,12 @@
-chrome.extension.sendMessage({}, function (response) {
-    var readyStateCheckInterval = setInterval(function () {
-            if (document.readyState === "complete") {
-                clearInterval(readyStateCheckInterval);
+addPageInjectScript();
 
-                var hasPokeball = document.getElementsByClassName("pokeball--icon").length > 0;
-
-                if(hasPokeball){
-                    var observerOptions = { childList: true, subtree: true };
-                    var observer = new MutationObserver(checkForImages);
-                    observer.observe(document, observerOptions);
-                }
-            }
-        }, 100);
-});
-
-function checkForImages(){
-    var badgeNode = document.querySelector("img[alt='badge']");
-    if(badgeNode){
-        chrome.extension.sendMessage({action: "badge"});
-    }
+function addPageInjectScript(){
+    var extensionIdScript = document.createElement('script');
+    extensionIdScript.innerHTML = "window.pokemonHelperExtensionId = \"" + chrome.runtime.id + "\";";
+    document.head.appendChild(extensionIdScript);
+    
+    var pageInjectScript = document.createElement('script');
+    pageInjectScript.setAttribute("type", "text/javascript");
+    pageInjectScript.src = chrome.runtime.getURL('src/pageInject.js');
+    document.head.appendChild(pageInjectScript);
 }
