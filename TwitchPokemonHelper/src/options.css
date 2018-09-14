@@ -1,7 +1,7 @@
-.row {
-    display: flex;
+body{
+    width: 27rem;
 }
-  
-.column {
-    padding: 5px;
+
+tr{
+    text-align: center;
 }

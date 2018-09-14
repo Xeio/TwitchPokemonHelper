@@ -1,30 +1,26 @@
-document.addEventListener("DOMContentLoaded", function(event) { 
-    chrome.extension.sendMessage({action: "getActivate"}, setActivated);
-    chrome.extension.sendMessage({action: "getVolume"}, setVolume);
-    document.getElementById("activator").onclick = toggleActivate;
-    document.getElementById("volume").onclick = volumeChanged;
+document.addEventListener("DOMContentLoaded", function(event) {
+    preferences.load().then(loaded);
 });
 
-function toggleActivate(){
-    chrome.extension.sendMessage({action: "toggleActivate"}, setActivated);
+function loaded(){
+    preferences.getAllPrefs().forEach(pref => {
+        let element = document.getElementById(pref.name);
+        if(element.type === "checkbox"){
+            element.checked = preferences.getPrefValue(pref);
+        }
+        else{
+            element.value = preferences.getPrefValue(pref);
+        }
+        element.onchange = onChange;
+    });
 }
 
-function volumeChanged(){
-    chrome.extension.sendMessage({action: "setVolume", volume: document.getElementById("volume").value}, setVolume);
-}
-
-function setActivated(value){
-    var activator = document.getElementById("activator");
-    if(value){
-        activator.src = chrome.runtime.getURL("media/icon-enabled.png");
-        activator.title = "Sound Enabled";
+function onChange(event){
+    let preference = preferences.getPrefByKey(event.target.id);
+    if(event.target.type === "checkbox"){
+        chrome.extension.sendMessage({action: "setPreference", preference: preference, value: event.target.checked});
     }
     else{
-        activator.src = chrome.runtime.getURL("media/icon-disabled.png");
-        activator.title = "Sound Disabled";
+        chrome.extension.sendMessage({action: "setPreference", preference: preference, value: event.target.value});
     }
-}
-
-function setVolume(value){
-    document.getElementById("volume").value = value;
 }

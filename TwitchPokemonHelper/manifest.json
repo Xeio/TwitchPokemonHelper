@@ -19,7 +19,7 @@
     }
   ],
   "background":{
-    "scripts":["src/bg.js"],
+    "scripts":["src/preferences.js", "src/bg.js"],
     "persistent": true
   },
   "browser_action": {
