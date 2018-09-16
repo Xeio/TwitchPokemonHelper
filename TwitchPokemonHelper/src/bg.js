@@ -43,7 +43,7 @@ function handleBadgeMessage(request){
 
     if(_debugMode && newPokemon){
         let pokemonInfo = request.pokemonData.find(i => i.id == pokemonId);
-        console.log(`New pokemon detected ${pokemonInfo && pokemonId.nameEn}`)
+        console.log(`New pokemon detected ${pokemonInfo && pokemonInfo.nameEn}`)
     }
 
     play(newPokemon);
