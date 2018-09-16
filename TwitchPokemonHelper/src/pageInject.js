@@ -12,7 +12,7 @@ if(hasPokeball){
 
     //This is kinda hacky, want to find the pokemon list and list of current pokemon but viewer.js doesn't expose any state objects
     //So we'll temporarily hijack Array.prototype methods to capture it then pass-through
-    arrayFindPrototype = Array.prototype.find;
+    let arrayFindPrototype = Array.prototype.find;
     Array.prototype.find = function(f){
         if(this.length > 0 && this[0].generation && this[0].region){
             pokemonData = this;
@@ -21,7 +21,7 @@ if(hasPokeball){
         return arrayFindPrototype.call(this, f);
     }
 
-    arrayMapPrototype = Array.prototype.map;
+    let arrayMapPrototype = Array.prototype.map;
     Array.prototype.map = function(f, thisArg){
         if(this.length > 0 && this.length >= collectionData.length && this[0].userId && this[0].spawnId && this[0].itemId){
             collectionData = this;
