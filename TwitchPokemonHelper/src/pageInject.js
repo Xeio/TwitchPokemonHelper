@@ -23,7 +23,7 @@ if(hasPokeball){
 
     arrayMapPrototype = Array.prototype.map;
     Array.prototype.map = function(f, thisArg){
-        if(this.length > 0 && this[0].userId && this[0].spawnId && this[0].itemId){
+        if(this.length > 0 && this.length >= collectionData.length && this[0].userId && this[0].spawnId && this[0].itemId){
             collectionData = this;
             //Note that the collection data changes during use, so we need to keep capturing this every time
         }
