@@ -1,6 +1,6 @@
 {
   "name": "Twitch Pokemon Helper",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "manifest_version": 2,
   "description": "Helps attain pokemon badges the TwitchPresents stream.",
   "permissions": [
