@@ -7,10 +7,16 @@ chrome.runtime.onMessageExternal.addListener(onMessage);
 function onMessage(request, sender, sendResponse){
     if (request.action == "badge"){
         handleBadgeMessage(request);
+        forwardMessageToTabs(request);
     }
     else if (request.action == "setPreference"){
         handleSetPreference(request);
     }
+}
+
+function forwardMessageToTabs(message){
+    chrome.tabs.query({url:"https://www.twitch.tv/twitchpresents"},
+        (tabs) => tabs.forEach((t) => chrome.tabs.sendMessage(t.id, message)));
 }
 
 function play(newPokemon, preview){
