@@ -4,6 +4,7 @@
   "manifest_version": 2,
   "description": "Helps attain pokemon badges the TwitchPresents stream.",
   "permissions": [
+    "*://www.twitch.tv/twitchpresents",
     "storage"
   ],
   "content_scripts": [
