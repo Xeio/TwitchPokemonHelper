@@ -11,6 +11,7 @@ let preferences = {
     NEW_BADGE_VOLUME: new Preference("NewBadgeVolume", 1),
     EXISTING_BADGE_ENABLED: new Preference("ExistingBadgeSound", true),
     EXISTING_BADGE_VOLUME: new Preference("ExistingBadgeVolume", 1),
+    SHOW_BADGE_DURING_ADS: new Preference("ShowBadgeDuringAds", false),
 
     prefValues: {},
 

@@ -4,8 +4,10 @@
   "manifest_version": 2,
   "description": "Helps attain pokemon badges the TwitchPresents stream.",
   "permissions": [
-    "*://www.twitch.tv/twitchpresents",
     "storage"
+  ],
+  "optional_permissions": [
+    "https://www.twitch.tv/twitchpresents"
   ],
   "content_scripts": [
     {
@@ -15,14 +17,6 @@
       "all_frames" : true,
       "js": [
         "src/inject.js"
-      ]
-    },
-    {
-      "matches": [
-        "*://www.twitch.tv/twitchpresents"
-      ],
-      "js": [
-        "src/twitchPresentsInject.js"
       ]
     }
   ],

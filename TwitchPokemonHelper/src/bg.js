@@ -1,8 +1,10 @@
 let _debugMode = !chrome.runtime.getManifest().update_url;
+const TWITCH_URL = "https://www.twitch.tv/twitchpresents";
 
 preferences.load().then(updateIcon);
 chrome.extension.onMessage.addListener(onMessage);
 chrome.runtime.onMessageExternal.addListener(onMessage);
+chrome.tabs.onUpdated.addListener(onTabsUpdated);
 
 function onMessage(request, sender, sendResponse){
     if (request.action == "badge"){
@@ -15,11 +17,8 @@ function onMessage(request, sender, sendResponse){
 }
 
 function forwardMessageToTabs(message){
-    chrome.tabs.query({url:"https://www.twitch.tv/twitchpresents"},
-        (tabs) => {
-            if(_debugMode && tabs.length == 0) console.log("No tabs found to forward to.");
-            tabs.forEach((t) => chrome.tabs.sendMessage(t.id, message));
-        });
+    chrome.tabs.query({url:TWITCH_URL},
+        (tabs) => tabs.forEach((tab) => chrome.tabs.sendMessage(tab.id, message)));
 }
 
 function play(newPokemon, preview){
@@ -66,8 +65,18 @@ function handleSetPreference(request){
     if(request.preference.name == preferences.EXISTING_BADGE_VOLUME.name){
         play(false, true);
     }
-    if(request.preference.name == preferences.NEW_BADGE_VOLUME.name){
+    else if(request.preference.name == preferences.NEW_BADGE_VOLUME.name){
         play(true, true);
+    }
+    else if(request.preference.name == preferences.SHOW_BADGE_DURING_ADS.name){
+        chrome.permissions.request({ origins: [TWITCH_URL] }, function(granted) {
+            if (granted) {
+                reloadTwitchTabs();
+            } else {
+                preferences.setPrefValue(preferences.SHOW_BADGE_DURING_ADS, false);
+                preferences.saveAll();
+            }
+        });
     }
 
     updateIcon();
@@ -81,4 +90,20 @@ function updateIcon(){
     else{
         chrome.browserAction.setIcon({"path" : "media/icon-disabled.png"});
     }
+}
+
+function onTabsUpdated(tabId, changeInfo, tab) {
+    if(changeInfo.status === "complete" && tab.url === TWITCH_URL){
+        if(preferences.getPrefValue(preferences.SHOW_BADGE_DURING_ADS))
+        {
+            chrome.tabs.executeScript(tabId, {file: 'src/twitchPresentsInject.js'});
+        }
+    }
+}
+
+function reloadTwitchTabs(){
+    chrome.tabs.query({url:TWITCH_URL},
+        (tabs) => {
+            tabs.forEach((t) => chrome.tabs.reload(t.id));
+        });
 }
