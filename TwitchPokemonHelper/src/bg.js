@@ -16,7 +16,10 @@ function onMessage(request, sender, sendResponse){
 
 function forwardMessageToTabs(message){
     chrome.tabs.query({url:"https://www.twitch.tv/twitchpresents"},
-        (tabs) => tabs.forEach((t) => chrome.tabs.sendMessage(t.id, message)));
+        (tabs) => {
+            if(_debugMode && tabs.length == 0) console.log("No tabs found to forward to.");
+            tabs.forEach((t) => chrome.tabs.sendMessage(t.id, message));
+        });
 }
 
 function play(newPokemon, preview){
