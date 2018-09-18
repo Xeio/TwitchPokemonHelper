@@ -1,6 +1,7 @@
 let hasPokeball = document.getElementsByClassName("pokeball--icon").length > 0;
 let pokemonData = [];
 let collectionData = [];
+let lastGuid = '';
 
 if(hasPokeball){
     let interval = setInterval(() => {
@@ -35,6 +36,10 @@ if(hasPokeball){
 function handleTwitchMessage(messageChannel, messageType, messageContent) {
     let message = JSON.parse(messageContent);
     if(message.env === "production" && message.spawnedItem){
-        chrome.runtime.sendMessage(window.pokemonHelperExtensionId, {action: "badge", message: message, pokemonData: pokemonData, collectionData: collectionData});
+        if(message.spawnedItem.guid !== lastGuid){
+            //Twitch appears to send duplicate messages to the handler? Ensure we don't process the same message twice.
+            lastGuid = message.spawnedItem.guid;
+            chrome.runtime.sendMessage(window.pokemonHelperExtensionId, {action: "badge", message: message, pokemonData: pokemonData, collectionData: collectionData});
+        }
     }
 }
