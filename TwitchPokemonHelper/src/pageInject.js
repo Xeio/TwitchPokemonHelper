@@ -1,11 +1,12 @@
-var hasPokeball = document.getElementsByClassName("pokeball--icon").length > 0;
-var pokemonData = [];
-var collectionData = [];
+let hasPokeball = document.getElementsByClassName("pokeball--icon").length > 0;
+let pokemonData = [];
+let collectionData = [];
 
 if(hasPokeball){
-    var interval = setInterval(() => {
+    let interval = setInterval(() => {
         if(window.Twitch && window.Twitch.ext){
             clearInterval(interval);
+            window.Twitch.ext.unlisten("global", handleTwitchMessage);
             window.Twitch.ext.listen("global", handleTwitchMessage);
         }
     }, 1000);
@@ -32,7 +33,7 @@ if(hasPokeball){
 }
 
 function handleTwitchMessage(messageChannel, messageType, messageContent) {
-    var message = JSON.parse(messageContent);
+    let message = JSON.parse(messageContent);
     if(message.env === "production" && message.spawnedItem){
         chrome.runtime.sendMessage(window.pokemonHelperExtensionId, {action: "badge", message: message, pokemonData: pokemonData, collectionData: collectionData});
     }

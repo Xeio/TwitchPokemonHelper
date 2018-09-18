@@ -1,4 +1,4 @@
-var _debugMode = !chrome.runtime.getManifest().update_url;
+let _debugMode = !chrome.runtime.getManifest().update_url;
 
 preferences.load().then(updateIcon);
 chrome.extension.onMessage.addListener(onMessage);
@@ -74,7 +74,7 @@ function handleSetPreference(request){
 }
 
 function updateIcon(){
-    var enabled = preferences.getPrefValue(preferences.ENABLED);
+    let enabled = preferences.getPrefValue(preferences.ENABLED);
     if(enabled){
         chrome.browserAction.setIcon({"path" : "media/icon-enabled.png"});
     }
